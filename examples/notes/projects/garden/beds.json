@@ -1,0 +1,8 @@
+{
+  "season": "2025",
+  "beds": [
+    { "name": "north bed", "plants": ["garlic", "chard", "rhubarb"], "notes": "rhubarb needs more compost" },
+    { "name": "raised bed", "plants": ["tomatoes", "basil", "marigold"], "notes": "marigold keeps aphids off the tomatoes" }
+  ],
+  "watering": { "schedule": "every second evening", "skip_if_rain_mm": 5 }
+}

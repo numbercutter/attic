@@ -1,0 +1,3 @@
+Voice memo, walking back from the station.
+Remember to book the Lisbon flights before the price jumps. Window seat.
+Also the billing migration: ask Priya whether the rounding bug is in the export or in the old database.

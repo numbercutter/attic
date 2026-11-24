@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640" role="img" aria-label="attic: Everything you&#39;ve kept, finally findable.">
+  <rect width="1280" height="640" fill="#2B1D14"/>
+  <g transform="translate(120 224) scale(3)">
+    <path d="M14 0 H46 L64 18 V50 Q64 64 50 64 H14 Q0 64 0 50 V14 Q0 0 14 0 Z" fill="#2B1D14" stroke="#AAA5A1" stroke-opacity="0.45" stroke-width="1"/>
+    <path d="M32 13 L53 31 V34 H11 V31 Z" fill="#FBBF24" stroke="#FBBF24" stroke-width="2" stroke-linejoin="round"/>
+    <circle cx="32" cy="27" r="4" fill="#2B1D14"/>
+    <path d="M17 41 H47 M17 48 H47" stroke="#FBBF24" stroke-width="4" stroke-linecap="round"/>
+  </g>
+  <text x="392" y="330" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-weight="700" font-size="120" fill="#FBBF24">attic</text>
+  <text x="396" y="398" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="30" fill="#AAA5A1">Everything you&#39;ve kept, finally findable.</text>
+  <text x="1240" y="604" text-anchor="end" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="18" fill="#AAA5A1" fill-opacity="0.7">a numbercutter instrument</text>
+</svg>

@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" role="img" aria-label="attic">
+  <path d="M14 0 H46 L64 18 V50 Q64 64 50 64 H14 Q0 64 0 50 V14 Q0 0 14 0 Z" fill="#2B1D14"/>
+  <path d="M32 13 L53 31 V34 H11 V31 Z" fill="#FBBF24" stroke="#FBBF24" stroke-width="2" stroke-linejoin="round"/>
+    <circle cx="32" cy="27" r="4" fill="#2B1D14"/>
+    <path d="M17 41 H47 M17 48 H47" stroke="#FBBF24" stroke-width="4" stroke-linecap="round"/>
+</svg>
