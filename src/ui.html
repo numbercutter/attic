@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>attic</title>
+<style>
+  :root { --base: #2B1D14; --deep: #1E140D; --line: #4A3628; --pop: #FBBF24; --tint: #AAA5A1; --text: #EDE6DF; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--base); color: var(--text); font: 15px/1.5 ui-sans-serif, system-ui, -apple-system, sans-serif; }
+  main { max-width: 760px; margin: 0 auto; padding: 32px 16px 64px; }
+  header { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; }
+  header h1 { margin: 0; font: 700 28px ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--pop); }
+  header span { color: var(--tint); font-size: 14px; }
+  nav { display: flex; gap: 4px; margin-left: auto; }
+  nav button, .row button, select { background: var(--deep); color: var(--tint); border: 1px solid var(--line); border-radius: 8px; padding: 6px 12px; font: inherit; cursor: pointer; }
+  nav button[aria-pressed="true"] { color: var(--base); background: var(--pop); border-color: var(--pop); }
+  .row { display: flex; gap: 8px; margin-bottom: 20px; }
+  input { flex: 1; min-width: 0; background: var(--deep); color: var(--text); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; font: inherit; }
+  input:focus, select:focus, button:focus-visible { outline: 2px solid var(--pop); outline-offset: 1px; }
+  ol { list-style: none; margin: 0; padding: 0; }
+  li { padding: 12px 0; border-top: 1px solid var(--line); }
+  .path { font: 13px ui-monospace, SFMono-Regular, Menlo, monospace; word-break: break-all; }
+  .meta { color: var(--tint); font-size: 13px; }
+  .meta a { color: var(--tint); }
+  .snip { margin-top: 4px; color: var(--text); }
+  mark { background: none; color: var(--pop); font-weight: 600; }
+  .empty { color: var(--tint); padding: 12px 0; }
+  .entry { display: flex; gap: 12px; align-items: baseline; }
+  .kind { flex: 0 0 64px; color: var(--tint); font: 12px ui-monospace, SFMono-Regular, Menlo, monospace; }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>attic</h1><span>everything you've kept</span>
+    <nav><button id="tab-search" aria-pressed="true">search</button><button id="tab-day" aria-pressed="false">day</button></nav>
+  </header>
+
+  <section id="search">
+    <form class="row" id="sform">
+      <input id="q" type="search" placeholder="search notes, transcripts, photos…" autofocus aria-label="query">
+      <select id="mode" aria-label="mode"><option>hybrid</option><option>keyword</option><option>semantic</option></select>
+    </form>
+    <ol id="hits"></ol>
+  </section>
+
+  <section id="day" hidden>
+    <div class="row">
+      <button id="prev" aria-label="previous day with entries">←</button>
+      <input id="d" type="date" aria-label="day">
+      <button id="next" aria-label="next day with entries">→</button>
+    </div>
+    <ol id="entries"></ol>
+  </section>
+</main>
+<script>
+const $ = (id) => document.getElementById(id);
+const esc = (s) => s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+const marked = (s) => esc(s.replace(/\s+/g, " ").trim()).replace(/\u0001/g, "<mark>").replace(/\u0002/g, "</mark>");
+let nav = { prev: null, next: null };
+
+function tab(name) {
+  $("search").hidden = name !== "search";
+  $("day").hidden = name !== "day";
+  $("tab-search").setAttribute("aria-pressed", name === "search");
+  $("tab-day").setAttribute("aria-pressed", name === "day");
+}
+
+async function search() {
+  const q = $("q").value.trim();
+  const list = $("hits");
+  if (!q) { list.innerHTML = ""; return; }
+  const res = await fetch(`/api/search?q=${encodeURIComponent(q)}&mode=${$("mode").value}`).then((r) => r.json());
+  if (res.error) { list.innerHTML = `<li class="empty">${esc(res.error)}</li>`; return; }
+  list.innerHTML = res.length ? res.map((h) => `<li>
+    <div class="path">${esc(h.path)}</div>
+    <div class="meta"><a href="#${h.day}" data-day="${h.day}">${h.day}</a> · ${esc(h.kind)} · ${h.via}</div>
+    <div class="snip">${marked(h.snippet)}</div></li>`).join("") : `<li class="empty">no matches</li>`;
+}
+
+async function showDay(day) {
+  if (!day) return;
+  tab("day");
+  $("d").value = day;
+  const res = await fetch(`/api/day?d=${day}`).then((r) => r.json());
+  nav = res;
+  $("prev").disabled = !res.prev;
+  $("next").disabled = !res.next;
+  $("entries").innerHTML = res.entries?.length
+    ? res.entries.map((e) => `<li class="entry"><span class="kind">${esc(e.kind)}</span> <span class="path">${esc(e.path)}</span></li>`).join("")
+    : `<li class="empty">nothing from ${esc(day)}</li>`;
+}
+
+let timer;
+$("q").addEventListener("input", () => { clearTimeout(timer); timer = setTimeout(search, 150); });
+$("sform").addEventListener("submit", (e) => { e.preventDefault(); search(); });
+$("mode").addEventListener("change", search);
+$("hits").addEventListener("click", (e) => { const d = e.target.dataset?.day; if (d) { e.preventDefault(); showDay(d); } });
+$("tab-search").onclick = () => { tab("search"); $("q").focus(); };
+$("tab-day").onclick = async () => showDay($("d").value || (await fetch("/api/recent").then((r) => r.json())));
+$("d").addEventListener("change", () => showDay($("d").value));
+$("prev").onclick = () => showDay(nav.prev);
+$("next").onclick = () => showDay(nav.next);
+</script>
+</body>
+</html>

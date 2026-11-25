@@ -1,14 +1,14 @@
 {
   "name": "@numbercutter/attic",
-  "version": "0.1.0",
-  "description": "Turn a folder of notes, transcripts and media into a searchable personal memory.",
+  "version": "0.2.0",
+  "description": "Turn a folder of notes, transcripts, PDFs and media into a local memory with keyword and semantic search.",
   "type": "module",
   "license": "MIT",
   "bin": { "attic": "src/cli.ts" },
   "exports": "./src/attic.ts",
   "files": ["src", "assets", "README.md", "LICENSE"],
   "scripts": {
-    "example": "bun src/cli.ts index examples/notes --db examples/attic.db && bun src/cli.ts search lisbon --db examples/attic.db"
+    "example": "bun src/cli.ts index examples/notes --db examples/attic.db && bun src/cli.ts search \"lisbon flights tile museum\" --db examples/attic.db"
   },
   "engines": { "bun": ">=1.1" },
   "repository": { "type": "git", "url": "https://github.com/numbercutter/attic" }
